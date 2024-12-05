@@ -14,6 +14,8 @@ const GamePage = ({ game, setGame, setFormShown, API_BASE }: PageProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setFormShown(false);
+
     (async function getGame() {
       try {
         const { data } = await axios.get(`${API_BASE}/${params.id}`);

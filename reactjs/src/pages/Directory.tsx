@@ -12,6 +12,8 @@ const Directory = ({ setGame, setFormShown, refresh, API_BASE }: PageProps) => {
   const [games, setGames] = useState<Game[]>([]);
 
   useEffect(() => {
+    setFormShown(false);
+
     (async function getGames() {
       try {
         const res = await fetch(API_BASE);
