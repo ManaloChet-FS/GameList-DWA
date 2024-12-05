@@ -2,13 +2,6 @@ import { useEffect, Dispatch, SetStateAction } from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import axios from "axios";
 
-interface Game {
-  _id: string
-  title: string
-  releaseDate: string
-  genre: string
-}
-
 interface PageProps {
   game: Game | undefined
   setGame: Dispatch<SetStateAction<Game | undefined>>
@@ -26,7 +19,7 @@ const GamePage = ({ game, setGame, setFormShown, API_BASE }: PageProps) => {
         const { data } = await axios.get(`${API_BASE}/${params.id}`);
         setGame(data);
       } catch (err) {
-        console.log(err);
+        navigate("/404");
       }
     })();
   }, [])
@@ -34,10 +27,11 @@ const GamePage = ({ game, setGame, setFormShown, API_BASE }: PageProps) => {
   const deleteGame = async () => {
     try {
       await axios.delete(`${API_BASE}/${params.id}`);
-      navigate("/");
     } catch (err) {
       console.log(err);
     }
+
+    navigate("/");
   }
 
   return (
@@ -48,6 +42,8 @@ const GamePage = ({ game, setGame, setFormShown, API_BASE }: PageProps) => {
         <div>
           <p>Release Date: {new Date(game.releaseDate).toLocaleDateString()}</p>
           <p>Genre: {game.genre}</p>
+          <p>Game entry created: {new Date(game.createdAt).toLocaleString()}</p>
+          <p>Last updated: {new Date(game.updatedAt).toLocaleString()}</p>
         </div>
         <div>
           <button onClick={() => setFormShown(true)}>&#x270E; Edit</button>

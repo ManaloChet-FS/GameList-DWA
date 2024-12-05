@@ -1,13 +1,6 @@
 import { Dispatch, SetStateAction, useRef, useState, FormEvent } from "react";
 import axios from "axios";
 
-interface Game {
-  _id: string
-  title: string
-  releaseDate: string
-  genre: string
-}
-
 interface PageProps {
   game: Game | undefined
   setFormShown: Dispatch<SetStateAction<boolean>>
@@ -69,6 +62,7 @@ const GameForm = ({ game, setFormShown, refresh, setRefresh, API_BASE }: PagePro
         game.title = gameInfo.title;
         game.releaseDate = gameInfo.releaseDate;
         game.genre = gameInfo.genre;
+        game.updatedAt = new Date();
   
       } catch (err: any) {
         handleError(err);

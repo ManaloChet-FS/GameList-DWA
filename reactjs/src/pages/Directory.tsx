@@ -1,13 +1,6 @@
 import { useEffect, useState, Dispatch, SetStateAction } from "react"
 import { GameCard } from "../components"
 
-interface Game {
-  _id: string
-  title: string
-  releaseDate: string
-  genre: string
-}
-
 interface PageProps {
   setGame: Dispatch<SetStateAction<Game | undefined>>
   setFormShown: Dispatch<SetStateAction<boolean>>
