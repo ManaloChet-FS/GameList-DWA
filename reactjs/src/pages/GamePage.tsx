@@ -13,16 +13,17 @@ interface PageProps {
   game: Game | undefined
   setGame: Dispatch<SetStateAction<Game | undefined>>
   setFormShown: Dispatch<SetStateAction<boolean>>
+  API_BASE: string
 }
 
-const GamePage = ({ game, setGame, setFormShown }: PageProps) => {
+const GamePage = ({ game, setGame, setFormShown, API_BASE }: PageProps) => {
   const params = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     (async function getGame() {
       try {
-        const { data } = await axios.get(`http://localhost:8000/games/${params.id}`);
+        const { data } = await axios.get(`${API_BASE}/${params.id}`);
         setGame(data);
       } catch (err) {
         console.log(err);
@@ -32,7 +33,7 @@ const GamePage = ({ game, setGame, setFormShown }: PageProps) => {
 
   const deleteGame = async () => {
     try {
-      await axios.delete(`http://localhost:8000/games/${params.id}`);
+      await axios.delete(`${API_BASE}/${params.id}`);
       navigate("/");
     } catch (err) {
       console.log(err);

@@ -12,15 +12,16 @@ interface PageProps {
   setGame: Dispatch<SetStateAction<Game | undefined>>
   setFormShown: Dispatch<SetStateAction<boolean>>
   refresh: boolean
+  API_BASE: string
 }
 
-const Directory = ({ setGame, setFormShown, refresh }: PageProps) => {
+const Directory = ({ setGame, setFormShown, refresh, API_BASE }: PageProps) => {
   const [games, setGames] = useState<Game[]>([]);
 
   useEffect(() => {
     (async function getGames() {
       try {
-        const res = await fetch("http://localhost:8000/games");
+        const res = await fetch(API_BASE);
         const data = await res.json();
         setGames(data);
       } catch (err) {

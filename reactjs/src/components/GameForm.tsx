@@ -13,9 +13,10 @@ interface PageProps {
   setFormShown: Dispatch<SetStateAction<boolean>>
   refresh: boolean
   setRefresh: Dispatch<SetStateAction<boolean>>
+  API_BASE: string
 }
 
-const GameForm = ({ game, setFormShown, refresh, setRefresh }: PageProps) => {
+const GameForm = ({ game, setFormShown, refresh, setRefresh, API_BASE }: PageProps) => {
   const [error, setError] = useState<string | undefined>();
 
   const titleRef = useRef<HTMLInputElement>(null);
@@ -55,7 +56,7 @@ const GameForm = ({ game, setFormShown, refresh, setRefresh }: PageProps) => {
 
     if (!game) {
       try {
-        await axios.post("http://localhost:8000/games", gameInfo);
+        await axios.post(API_BASE, gameInfo);
         setRefresh(!refresh);
       } catch (err: any) {
         handleError(err);
@@ -63,7 +64,7 @@ const GameForm = ({ game, setFormShown, refresh, setRefresh }: PageProps) => {
       }
     } else {
       try {
-        await axios.put(`http://localhost:8000/games/${game._id}`, gameInfo);
+        await axios.put(`${API_BASE}/${game._id}`, gameInfo);
   
         game.title = gameInfo.title;
         game.releaseDate = gameInfo.releaseDate;
