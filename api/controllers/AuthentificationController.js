@@ -1,13 +1,12 @@
 const User = require("../models/user");
 const jwt = require("jwt-simple");
-const config = require("../config");
 
 const tokenForUser = user => {
   const timestamp = new Date().getTime();
   return jwt.encode({
     sub: user.id,
     iat: timestamp
-  }, config.secret)
+  }, process.env.SECRET)
 }
 
 exports.signin = (req, res, next) => {
