@@ -26,7 +26,7 @@ const SignUp = ({ setLoggedIn }: SignUpProps) => {
     e.preventDefault();
     try {
       await authService.signup(email, password).then(
-        res => {
+        () => {
           setLoggedIn(true);
           navigate("/");
         },

@@ -35,7 +35,7 @@ const Login = ({ setLoggedIn }: LoginProps) => {
     e.preventDefault();
     try {
       await authService.login(email, password).then(
-        res => {
+        () => {
           setLoggedIn(true);
           navigate("/");
         },
