@@ -1,34 +1,37 @@
 import { useEffect, Dispatch, SetStateAction } from "react";
 import { useParams, Link, useNavigate } from "react-router";
-import axios from "axios";
+import authService from "../services/auth.service";
+import gamesService from "../services/games.service";
 
 interface PageProps {
   game: Game | undefined
   setGame: Dispatch<SetStateAction<Game | undefined>>
   setFormShown: Dispatch<SetStateAction<boolean>>
-  API_BASE: string
 }
 
-const GamePage = ({ game, setGame, setFormShown, API_BASE }: PageProps) => {
+const GamePage = ({ game, setGame, setFormShown }: PageProps) => {
   const params = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    setFormShown(false);
-
-    (async function getGame() {
-      try {
-        const { data } = await axios.get(`${API_BASE}/${params.id}`);
-        setGame(data);
-      } catch (err) {
-        navigate("/404");
+    gamesService.getPrivateGame(params.id!).then(
+      res => {
+        setGame(res.data);
+      },
+      (error) => {
+        if (error.res && error.response.status == 403 || error.response.status == 401) {
+          authService.logout();
+          navigate("/login");
+        }
       }
-    })();
+    )
+
+    setFormShown(false);
   }, [])
 
   const deleteGame = async () => {
     try {
-      await axios.delete(`${API_BASE}/${params.id}`);
+      gamesService.deletePrivateGame(params.id!);
     } catch (err) {
       console.log(err);
     }
@@ -44,8 +47,8 @@ const GamePage = ({ game, setGame, setFormShown, API_BASE }: PageProps) => {
         <div>
           <p>Release Date: {new Date(game.releaseDate).toLocaleDateString()}</p>
           <p>Genre: {game.genre}</p>
-          <p>Game entry created: {new Date(game.createdAt).toLocaleString()}</p>
-          <p>Last updated: {new Date(game.updatedAt).toLocaleString()}</p>
+          <p>Game entry created: {new Date(game.createdAt!).toLocaleString()}</p>
+          <p>Last updated: {new Date(game.updatedAt!).toLocaleString()}</p>
         </div>
         <div>
           <button onClick={() => setFormShown(true)}>&#x270E; Edit</button>

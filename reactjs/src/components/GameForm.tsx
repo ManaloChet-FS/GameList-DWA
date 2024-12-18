@@ -1,15 +1,14 @@
 import { Dispatch, SetStateAction, useRef, useState, FormEvent } from "react";
-import axios from "axios";
+import gamesService from "../services/games.service";
 
 interface PageProps {
   game: Game | undefined
   setFormShown: Dispatch<SetStateAction<boolean>>
   refresh: boolean
   setRefresh: Dispatch<SetStateAction<boolean>>
-  API_BASE: string
 }
 
-const GameForm = ({ game, setFormShown, refresh, setRefresh, API_BASE }: PageProps) => {
+const GameForm = ({ game, setFormShown, refresh, setRefresh }: PageProps) => {
   const [error, setError] = useState<string | undefined>();
 
   const titleRef = useRef<HTMLInputElement>(null);
@@ -41,15 +40,15 @@ const GameForm = ({ game, setFormShown, refresh, setRefresh, API_BASE }: PagePro
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
 
-    const gameInfo = {
+    const gameInfo: Game = {
       title: titleRef.current!.value,
       releaseDate: releaseDateRef.current!.value,
-      genre: genreRef.current!.value
+      genre: genreRef.current!.value,
     }
 
     if (!game) {
       try {
-        await axios.post(API_BASE, gameInfo);
+        gamesService.createPrivateGame(gameInfo);
         setRefresh(!refresh);
       } catch (err: any) {
         handleError(err);
@@ -57,7 +56,7 @@ const GameForm = ({ game, setFormShown, refresh, setRefresh, API_BASE }: PagePro
       }
     } else {
       try {
-        await axios.put(`${API_BASE}/${game._id}`, gameInfo);
+        gamesService.updatePrivateGame(game._id!, gameInfo);
   
         game.title = gameInfo.title;
         game.releaseDate = gameInfo.releaseDate;
@@ -76,7 +75,7 @@ const GameForm = ({ game, setFormShown, refresh, setRefresh, API_BASE }: PagePro
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form id="gameForm" onSubmit={handleSubmit}>
       <h3>{game ? 'Edit' : 'Create'} Game</h3>
       <div>
         <label htmlFor="title">Title</label>

@@ -2,11 +2,11 @@ export {};
 
 declare global {
   interface Game {
-    _id: string
+    _id?: string
     title: string
     releaseDate: string
     genre: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt?: Date
+    updatedAt?: Date
   }
 }
