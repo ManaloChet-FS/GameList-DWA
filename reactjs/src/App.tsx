@@ -1,23 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header, GameForm } from "./components"
-import { Directory, GamePage, NotFound } from "./pages";
+import authService from "./services/auth.service";
+import { Directory, GamePage, NotFound, Login, SignUp } from "./pages";
 import { Routes, Route } from "react-router";
 
 function App() {
-  const API_BASE = import.meta.env.VITE_API_BASE;
-
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [formShown, setFormShown] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [game, setGame] = useState<Game>();
 
+  useEffect(() => {
+    const user = authService.getCurrentUser();
+    if (user) {
+      setLoggedIn(true);
+    }
+  }, [])
+
   return (
     <>
-      <Header />
+      <Header loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
       <main>
-        {formShown && <GameForm game={game} setFormShown={setFormShown} refresh={refresh} setRefresh={setRefresh} API_BASE={API_BASE} />}
+        {formShown && <GameForm game={game} setFormShown={setFormShown} refresh={refresh} setRefresh={setRefresh} />}
         <Routes>
-          <Route path="/" element={<Directory setGame={setGame} setFormShown={setFormShown} refresh={refresh} API_BASE={API_BASE} />} />
-          <Route path="/games/:id" element={<GamePage game={game} setGame={setGame} setFormShown={setFormShown} API_BASE={API_BASE} />} />
+          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
+          <Route path="/signup" element={<SignUp setLoggedIn={setLoggedIn} />} />
+          <Route path="/" element={<Directory setGame={setGame} setFormShown={setFormShown} refresh={refresh} />} />
+          <Route path="/games/:id" element={<GamePage game={game} setGame={setGame} setFormShown={setFormShown} />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </main>
